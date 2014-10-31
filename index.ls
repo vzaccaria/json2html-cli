@@ -19,27 +19,29 @@ Usage:
     json2html-cli -v | -h | --help 
 
 Options: 
-    -t TEMPLATE   Jade template that expands the `post.contents` 
-    -c CONFIG     JSON configuration file of the site (has a `baseUrl` property)
-    -d DEST    
+    -t, --template TEMPLATE   Jade template that expands the `post.contents` 
+    -c, --config CONFIG       JSON configuration file of the site (has a `baseUrl` property)
+    -d, --dest DEST           Destination directory
 
 Arguments: 
     DIR         Source directory
 
 Description: 
-    Command `markdown` converts markdown files to `.json` by: 
+    Command `html` unwraps each post's html-content in DEST for 
+    each `json` file in DIR. It uses the post's date to create 
+    appropriate directories.
+
+    Command `markdown` is somewhat a preliminary step. It converts 
+    markdown files to `.json` by: 
 
         - rendering markdown with marked 
 
         - rendering the blog post with jade template TEMPLATE 
 
-    It generates a json where the `post.contents` property
-    has been filled with the generated html. Either accepts
-    a file from standard input (`input` command) or 
+    The html output is posted to the `post.html-content` property.
+    This post either accepts a file from standard input (`input` command) or
     a directory with markdown files (DIR).
 
-    Command `html` generates the final `html` in DEST for 
-    each `json` file in DIR.
 """
 
 
@@ -99,23 +101,29 @@ else
 
 o = docopt(doc)
 
-console.log o
+# console.log o
 
 fs = bb.promisifyAll(fs)
+
+o-template ?= o['-t']
+o-template ?= o['--template']
+
+o-config ?= o['-c']
+o-config ?= o['--config']
 
 read-json = -> JSON.parse(fs.readFileSync(it, 'utf-8'))
 
 
 render-json = (jj) ->
     jj.post.contents = (md.render(jj.md-content));
-    conf    = read-json(o['-c'])
+    conf    = read-json(o-config)
     locals  = 
           post: jj.post
-          filename: o['-t']
+          filename: o-template
           pretty: true 
 
     locals   = _.extend(locals, conf)
-    template = fs.readFileSync(o['-t'], 'utf-8')
+    template = fs.readFileSync(o-template, 'utf-8')
     result   = jade.compile(template, locals)(locals)
     result   = beml.process(result)
     delete jj.post.contents 
@@ -143,7 +151,7 @@ if o['markdown']
                     fs.readFileAsync(f, 'utf-8').then ->
                         data = parse(it)
                         rendered = render-json(data)
-                        console.log "Writing #dest/#{rendered.post.file-name}.json "
+                        # console.log "Writing #dest/#{rendered.post.file-name}.json "
                         fs.writeFileAsync("#dest/#{rendered.post.file-name}.json", JSON.stringify(rendered, 0, 4), 'utf-8')
             bb.all(fn).then ->
                 console.log "done"
