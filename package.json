@@ -3,7 +3,7 @@
   "version": "0.0.3",
   "description": "Converts a bunch of json files into a directory structured by category/year/month/day/name of html files",
   "bin": {
-    "json2html-cli": "./index.js"
+    "blog-cli": "./index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

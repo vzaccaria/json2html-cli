@@ -6,6 +6,7 @@ _        = require 'underscore'
 bb       = require 'bluebird'
 beml     = require('beml')
 {parse}  = require('./parse')
+moment   = require 'moment'
 sh       = bb.promisifyAll(require 'shelljs')
 require! 'fs'
 
@@ -14,81 +15,37 @@ require! 'fs'
 doc = """
 
 Usage:
-    json2html-cli markdown [ input | directory DIR -d DEST ] -t TEMPLATE -c CONFIG 
-    json2html-cli html directory DIR -d DEST 
-    json2html-cli -v | -h | --help 
+    blog-cli md2json [ input | directory DIR -d DEST ] -t TEMPLATE -c CONFIG 
+    blog-cli json2html [ directory -d DEST ] DIR  
+    blog-cli json2json [-k CATEGORY] [ -t TEMPLATE -c CONFIG ] DIR  
+    blog-cli renderjson -f JSON -t TEMPLATE -c CONFIG 
+    blog-cli -v | -h | --help 
 
 Options: 
     -t, --template TEMPLATE   Jade template that expands the `post.contents` 
     -c, --config CONFIG       JSON configuration file of the site (has a `baseUrl` property)
-    -d, --dest DEST           Destination directory
+    -d, --destination DEST    Destination directory
+    -k, --filter CATEGORY     Filter by category
+    -f, --file JSON           Render JSON inside the template
 
 Arguments: 
     DIR         Source directory
 
-Description: 
-    Command `html` unwraps each post's html-content in DEST for 
-    each `json` file in DIR. It uses the post's date to create 
-    appropriate directories.
-
-    Command `markdown` is somewhat a preliminary step. It converts 
-    markdown files to `.json` by: 
-
-        - rendering markdown with marked 
-
-        - rendering the blog post with jade template TEMPLATE 
-
-    The html output is posted to the `post.html-content` property.
-    This post either accepts a file from standard input (`input` command) or
-    a directory with markdown files (DIR).
 
 """
 
 
 
+get-option = (a, b, def, o) ->
+    if not o[a] and not o[b]
+        return def
+    else 
+        return o[b]
+
+o = docopt(doc)
+# console.log o
 
 
-
-# Description: 
-
-#     # When using `json` command 
-
-#     You have one or a bunch of json files that contain yaml data 
-#     and markdown (yep, like blog posts).
-
-#     This program lets you generate html for each one of those
-#     by: 
-
-#         - rendering markdown with marked 
-
-#         - rendering the blog post with jade template <template>
-
-#     This program generates a new json where the content has been 
-#     substituted with the html equivalent.
-
-#     # When using `md`
-#     Expects a yaml formatted markdown instead of a json file.
-
-#     # When using `dir` command
-
-#     If the `dir` command is used, all json files in DIR are unwrapped
-#     and the html is put into DEST following nested dirs post conventions.
-
-# Options:
-#     * DIR is the directory containing all the json files. 
-
-#     * JSON is the name of a single json file. It should have a mdContent property 
-#       with the suitable markup. Instead, if you prefer to read from stdin, replace
-#       the name with the keyword `in`.
-
-#     * TEMPLATE is the name of the jade file to be used as template. 
-
-#     * CONFIG is a sitewide set of variables to be included in jade's locals.
-
-#     * DEST is the directory that will contain the final html files. 
-#       If it is not specified, it is intended equal toDIR 
-    
-# """
 
 
 md = {}
@@ -105,80 +62,102 @@ o = docopt(doc)
 
 fs = bb.promisifyAll(fs)
 
-o-template ?= o['-t']
-o-template ?= o['--template']
-
-o-config ?= o['-c']
-o-config ?= o['--config']
+category   = get-option('-k' , '--filter'      , '' , o)
+dest       = get-option('-d' , '--destination' , '' , o)
+o-template = get-option('-t' , '--template'    , '' , o)
+o-config   = get-option('-c' , '--config'      , '' , o)
+jsonfile   = get-option('-f' , '--file'        , '' , o)
+directory  = o["DIR"]
 
 read-json = -> JSON.parse(fs.readFileSync(it, 'utf-8'))
 
+render-json-w-locals = (locals) ->
 
-render-json = (jj) ->
+    template        = fs.readFileSync(o-template, 'utf-8')
+    conf            = read-json(o-config)
+
+    locals          = _.extend(locals, conf)
+    locals.filename = o-template
+    locals.pretty   = true
+
+    result          = jade.compile(template, locals)(locals)
+    result          = beml.process(result)
+    return result
+
+render-json-with-post-list = (post-list) ->
+    render-json-w-locals(data: post-list)
+
+
+render-json-post = (jj) ->
     jj.post.contents = (md.render(jj.md-content));
-    conf    = read-json(o-config)
-    locals  = 
-          post: jj.post
-          filename: o-template
-          pretty: true 
-
-    locals   = _.extend(locals, conf)
-    template = fs.readFileSync(o-template, 'utf-8')
-    result   = jade.compile(template, locals)(locals)
-    result   = beml.process(result)
+    res = render-json-w-locals(post: jj.post)
     delete jj.post.contents 
-    jj.post.html-content = result
+    jj.post.html-content = res
+    jj.post.link = "#{jj.post.dir-name}/#{jj.post.file-name}.html"
     return jj 
 
 
-if o['markdown']
-    if not o['directory'] 
+if o['md2json'] and not o['directory'] 
         data = {}
         if o['input'] 
             data := parse(fs.readFileSync('/dev/stdin', 'utf-8'))
         else
             throw "not supported"
 
-        render-json(data)
+        render-json-post(data)
         console.log JSON.stringify(data, 0, 4)
-    else
-        directory = o["DIR"]
+
+if o['md2json'] and o['directory'] 
         filenames = glob.sync("#directory/*.md")
-        dest = o["-d"]
         sh.execAsync("mkdir -p #dest", { +async })
         .then ->
             fn = filenames.map (f) ->
                     fs.readFileAsync(f, 'utf-8').then ->
                         data = parse(it)
-                        rendered = render-json(data)
+                        rendered = render-json-post(data)
                         # console.log "Writing #dest/#{rendered.post.file-name}.json "
                         fs.writeFileAsync("#dest/#{rendered.post.file-name}.json", JSON.stringify(rendered, 0, 4), 'utf-8')
             bb.all(fn).then ->
                 console.log "done"
 
-else
-    if not o['directory'] 
-        data = {}
-        if o['input'] 
-            data := JSON.parse(fs.readFileSync('/dev/stdin', 'utf-8'))
-        else
-            data := read-json(o["JSON"])
+if o['json2html']
+    filenames = glob.sync("#directory/*.json")
+    fn = filenames.map (f) ->
+        fs.readFileAsync(f, 'utf-8').then ->
+            {post} = JSON.parse(it) 
+            sh.execAsync("mkdir -p #dest/#{post.dir-name}", { +async })
+            .then -> 
+               fs.writeFileAsync("#dest/#{post.dir-name}/#{post.file-name}.html", post.html-content, 'utf-8')
 
-        render-json(data)
-        console.log JSON.stringify(data, 0, 4)
-    else 
-        directory = o["DIR"]
-        filenames = glob.sync("#directory/*.json")
-        dest = o["-d"]
-        fn = filenames.map (f) ->
+    bb.all(fn).then ->
+        console.log "done"
+
+if o['json2json'] 
+    filenames = glob.sync("#directory/*.json")
+
+    fn = filenames.map (f) ->
             fs.readFileAsync(f, 'utf-8').then ->
                 {post} = JSON.parse(it) 
-                sh.execAsync("mkdir -p #dest/#{post.dir-name}", { +async })
-                .then -> 
-                   fs.writeFileAsync("#dest/#{post.dir-name}/#{post.file-name}.html", post.html-content, 'utf-8')
+                delete post.html-content
+                return post
 
-        bb.all(fn).then ->
-            console.log "done"
+    bb.all(fn).then ->
+        filtered-posts = it
+        filtered-posts = _.sort-by(filtered-posts, -> -1*moment(it.date).unix())
+        if category != ""
+            filtered-posts := _.filter(filtered-posts, (-> it.category == category))
+
+        if o-template != ''
+            console.log render-json-with-post-list(filtered-posts)
+        else
+            console.log JSON.stringify(filtered-posts, 0, 4)
+
+if o['renderjson'] 
+            fs.readFileAsync(jsonfile, 'utf-8').then ->
+                data = JSON.parse(it)    
+                console.log render-json-w-locals(data: data)
+
+
 
 
 
