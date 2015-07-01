@@ -1,6 +1,6 @@
 {
   "name": "json2html-cli",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Converts a bunch of json files into a directory structured by category/year/month/day/name of html files",
   "bin": {
     "blog-cli": "./index.js"
