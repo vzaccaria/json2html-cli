@@ -1,0 +1,50 @@
+
+mixin sidebar__link_item(icon, name, link) 
+	li.sidebar__link_item(onclick="location.href='#{link}'", style="cursor: pointer")
+		span.sidebar__link_item__icon.fa-stack
+			i.fa.fa-stack-2x.fa-circle
+			i.sidebar__link_item__icon__inner.fa.fa-stack-1x.fa-inverse(class=icon)
+		.sidebar__link_item__name=name
+
+mixin lorem()
+	p Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+
+doctype html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+html(xmlns="http://www.w3.org/1999/xhtml")
+	head(lang="en")
+		block title
+		meta(http-equiv="content-type", content="text/html; charset=UTF-8")
+		meta(name="description", content="")
+		meta(name="keywords", content="")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui")
+		script(type="text/javascript", src="#{baseUrl}/js/client.js")
+
+	body(ng-app="application")
+		.site_wrapper
+
+			.sidebar 
+				img.sidebar__picture 
+				.sidebar__name Vittorio Zaccaria
+				.sidebar__address Politecnico di Milano
+
+				ul.sidebar__link_list
+					+sidebar__link_item('fa-home'           , 'Home'     , baseUrl + "/")
+					+sidebar__link_item('fa-flask'          , 'Research' , baseUrl + "/research.html")
+					+sidebar__link_item('fa-quote-left'     , 'Blog'     , baseUrl + "/blog.html")
+					+sidebar__link_item('fa-floppy-o'       , 'Projects' , baseUrl + "/projects.html")
+					+sidebar__link_item('fa-graduation-cap' , 'Teaching' , baseUrl + "/teaching.html")
+					+sidebar__link_item('fa-user'           , 'CV'       , baseUrl + "/deposit/cv.pdf")
+					+sidebar__link_item('fa-youtube-play'   , 'Videos'   , baseUrl + "/videos.html")
+					+sidebar__link_item('fa-map-marker'     , 'Address'  , baseUrl + "/address.html")
+
+				.sidebar__bottom 
+					.sidebar__bottom__button(onclick="location.href='http://www.linkedin.com/in/vzaccaria'", style="cursor: pointer")
+						i.fa.fa-linkedin-square
+					.sidebar__bottom__button(onclick="location.href='http://twitter.com/_vzaccaria_'", style="cursor: pointer")
+						i.fa.fa-twitter-square
+					.sidebar__bottom__button(onclick="location.href='https://plus.google.com/116322227495215922957/about'", style="cursor: pointer")
+						i.fa.fa-google-plus-square
+							
+			.site_container
+				append content 

@@ -1,0 +1,43 @@
+extends ./base 
+
+block append title 
+	title= post.title
+
+block content
+	.post_container
+		.post_container__post__title #{post.title}
+		.post_container__post__subtitle 
+
+			.post_container__post__date 
+				i.fa.fa-calendar-o 
+				.post_container__post__date_value #{post.formattedDate}
+
+			.post_container__post__category 
+				i.fa.fa-flag-o 
+				.post_container__post__category_value #{post.category}
+
+			.post_container__post__tags 
+				i.fa.fa-tags
+				each t in post.tags
+					.post_container__post__tag #{t}
+
+			.share_buttons 
+				.share_buttons__message Share: 
+				.share_buttons__share_reddit(style="cursor: pointer")
+					i.fa.fa-reddit 
+				.share_buttons__share_twitter(style="cursor: pointer")
+					i.fa.fa-twitter
+		.post_text!= post.contents
+		script(src='//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG')
+		#disqus_thread.post_container__comments 
+			script
+				:coffee
+						disqus_shortname = 'vittoriozaccaria'
+						dsq = document.createElement('script')
+						dsq.type = 'text/javascript'
+						dsq.async = true
+						dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js'
+						(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+			a(href="http://disqus.com" class="dsq-brlink") comments powered by <span class="logo-disqus">Disqus</span>
+
+
