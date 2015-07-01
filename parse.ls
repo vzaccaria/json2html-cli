@@ -18,12 +18,12 @@ _module = ->
         is-yaml = false
         for l in _.lines(file)
             if is-yaml
-                if l == /^---/
+                if l == /^---$/
                     is-yaml := false
                 else
                     yaml := yaml + "\n" + l
             else
-                if l == /^---/
+                if l == /^---$/
                     is-yaml := true
                     yaml := yaml + "\n" + l
                 else

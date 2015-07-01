@@ -17,13 +17,13 @@
       for (i$ = 0, len$ = (ref$ = _.lines(file)).length; i$ < len$; ++i$) {
         l = ref$[i$];
         if (isYaml) {
-          if (/^---/.exec(l)) {
+          if (/^---$/.exec(l)) {
             isYaml = false;
           } else {
             yaml = yaml + "\n" + l;
           }
         } else {
-          if (/^---/.exec(l)) {
+          if (/^---$/.exec(l)) {
             isYaml = true;
             yaml = yaml + "\n" + l;
           } else {

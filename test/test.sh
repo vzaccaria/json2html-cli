@@ -43,3 +43,20 @@ tem1=$postdstdir/blog.html
 $bindir/index.js json2json $postdstdir -k infob -t $template -c $config > $postdstdir/blog.html
 $npm/diff-files $ref1 $tem1 -m "Test generation of html toc from json"
 
+#  _            _   ____  
+# | |_ ___  ___| |_|___ \ 
+# | __/ _ \/ __| __| __) |
+# | ||  __/\__ \ |_ / __/ 
+#  \__\___||___/\__|_____|
+
+rm -rf $postdstdir
+mkdir $postdstdir
+
+postsrcdir=$srcdir/fixtures/posts2
+template=$srcdir/fixtures/layouts/post.jade
+$bindir/index.js md2json directory $postsrcdir -d $postdstdir -t $template -c $config
+
+ref2=$refdir/soluzioni-prova-scritta-del-29-giugno.json
+tem2=$postdstdir/soluzioni-prova-scritta-del-29-giugno.json
+$npm/diff-files $ref2 $tem2 -m "Test generate json with html inside."
+
