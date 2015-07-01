@@ -6,32 +6,32 @@
 .DEFAULT_GOAL := all
 
 
-.PHONY: c-t710wpir
-c-t710wpir: command.js parse.js
+.PHONY: c-3t5vffg3
+c-3t5vffg3: command.js parse.js
 
 
 .PHONY: build
-build: c-t710wpir
+build: c-3t5vffg3
 
 
 .PHONY: test
-test: k-2ftvrvya
+test: k-0oma6i6n
 
 
 .PHONY: up
-up: k-uewf3sxs
+up: k-jl3t0jdj
 
 
 .PHONY: major
-major: k-60r0yfy8 k-93obxfun k-p1w0xph9
+major: k-hyk04hes
 
 
 .PHONY: minor
-minor: k-iqhonb9c k-1reee8d6 k-u7pj0smq
+minor: k-7rd1613v
 
 
 .PHONY: patch
-patch: k-snx5s32r k-ko0r2fcv k-6op56eu2
+patch: k-uywa5gji
 
 
 .PHONY: prepare
@@ -40,75 +40,45 @@ prepare: .
 
 
 
-.PHONY: k-8xg44okw
-k-8xg44okw:  
+.PHONY: k-a4dqh4gh
+k-a4dqh4gh:  
 	((echo '#!/usr/bin/env node') && cat command.js) > index.js
 
 
-.PHONY: k-t1hxnaie
-k-t1hxnaie:  
+.PHONY: k-8smq1p83
+k-8smq1p83:  
 	chmod +x ./index.js
 
 
 .PHONY: all
 all: 
 	make build 
-	make k-8xg44okw 
-	make k-t1hxnaie  
+	make k-a4dqh4gh 
+	make k-8smq1p83  
 
 
-.PHONY: k-2ftvrvya
-k-2ftvrvya:  
+.PHONY: k-0oma6i6n
+k-0oma6i6n:  
 	./test/test.sh
 
 
-.PHONY: k-uewf3sxs
-k-uewf3sxs:  
+.PHONY: k-jl3t0jdj
+k-jl3t0jdj:  
 	make clean && babel configure.js | node
 
 
-.PHONY: k-60r0yfy8
-k-60r0yfy8:  
-	make all
-
-
-.PHONY: k-93obxfun
-k-93obxfun:  
-	make docs
-
-
-.PHONY: k-p1w0xph9
-k-p1w0xph9:  
+.PHONY: k-hyk04hes
+k-hyk04hes:  
 	./node_modules/.bin/xyz -i major
 
 
-.PHONY: k-iqhonb9c
-k-iqhonb9c:  
-	make all
-
-
-.PHONY: k-1reee8d6
-k-1reee8d6:  
-	make docs
-
-
-.PHONY: k-u7pj0smq
-k-u7pj0smq:  
+.PHONY: k-7rd1613v
+k-7rd1613v:  
 	./node_modules/.bin/xyz -i minor
 
 
-.PHONY: k-snx5s32r
-k-snx5s32r:  
-	make all
-
-
-.PHONY: k-ko0r2fcv
-k-ko0r2fcv:  
-	make docs
-
-
-.PHONY: k-6op56eu2
-k-6op56eu2:  
+.PHONY: k-uywa5gji
+k-uywa5gji:  
 	./node_modules/.bin/xyz -i patch
 
 
