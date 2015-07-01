@@ -6,40 +6,40 @@
 .DEFAULT_GOAL := all
 
 
-.PHONY: c-2m3s0w3l
-c-2m3s0w3l: index.js
+.PHONY: c-uvp2hr9w
+c-uvp2hr9w: index.js
 
 
-.PHONY: c-x9yxbm6c
-c-x9yxbm6c: command.js parse.js
+.PHONY: c-ktbwgg7p
+c-ktbwgg7p: command.js parse.js
 
 
 .PHONY: build
-build: c-2m3s0w3l c-x9yxbm6c
+build: c-uvp2hr9w c-ktbwgg7p
 
 
 .PHONY: test
-test: k-yuk06upw
+test: k-dt81xwk3
 
 
 .PHONY: up
-up: k-6f9wnp4r
+up: k-3ewjjixg
 
 
 .PHONY: major
-major: k-n71j5lw4
+major: k-1ixwlonl
 
 
 .PHONY: minor
-minor: k-ytyc10pr
+minor: k-yow828r8
 
 
 .PHONY: patch
-patch: k-6bxusk6e
+patch: k-fn22sj53
 
 
 .PHONY: docs
-docs: k-auvltas2
+docs: k-dp1vnav5
 
 
 .PHONY: prepare
@@ -53,33 +53,33 @@ all:
 	make build  
 
 
-.PHONY: k-yuk06upw
-k-yuk06upw:  
+.PHONY: k-dt81xwk3
+k-dt81xwk3:  
 	./test/test.sh
 
 
-.PHONY: k-6f9wnp4r
-k-6f9wnp4r:  
+.PHONY: k-3ewjjixg
+k-3ewjjixg:  
 	make clean && babel configure.js | node
 
 
-.PHONY: k-n71j5lw4
-k-n71j5lw4:  
+.PHONY: k-1ixwlonl
+k-1ixwlonl:  
 	./node_modules/.bin/xyz -i major
 
 
-.PHONY: k-ytyc10pr
-k-ytyc10pr:  
+.PHONY: k-yow828r8
+k-yow828r8:  
 	./node_modules/.bin/xyz -i minor
 
 
-.PHONY: k-6bxusk6e
-k-6bxusk6e:  
+.PHONY: k-fn22sj53
+k-fn22sj53:  
 	./node_modules/.bin/xyz -i patch
 
 
-.PHONY: k-auvltas2
-k-auvltas2:  
+.PHONY: k-dp1vnav5
+k-dp1vnav5:  
 	./node_modules/.bin/mustache package.json docs/readme.md | ./node_modules/.bin/stupid-replace '~USAGE~' -f docs/usage.md > readme.md
 
 
@@ -99,7 +99,7 @@ update:
 
 
 index.js: command.ls 
-	((echo '#!/usr/bin/env node') && lsc -c command.ls) > index.js && chmod +x index.js
+	((echo '#!/usr/bin/env node') && lsc -p -c command.ls) > index.js && chmod +x index.js
 
 command.js: command.ls 
 	lsc -c command.ls

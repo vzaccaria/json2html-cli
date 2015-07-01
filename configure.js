@@ -5,7 +5,7 @@ var {
 generateProject(_ => {
 
 _.livescriptc = (dir, prod, ...deps) => {
-    var command = (_) => `((echo '#!/usr/bin/env node') && lsc -c ${_.source}) > ${_.product} && chmod +x ${_.product}`
+    var command = (_) => `((echo '#!/usr/bin/env node') && lsc -p -c ${_.source}) > ${_.product} && chmod +x ${_.product}`
     var product = (_) => prod
     _.compileFiles(...([command, product, dir].concat(deps)))
   }
