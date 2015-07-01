@@ -1,0 +1,27 @@
+extends ./layouts/base 
+
+block append title 
+	title Vittorio Zaccaria — Blog posts
+
+block content
+	div(block='posts')
+		each p in data 
+			a(block='post-preview', href='#{p.link}', style="cursor: pointer")
+
+				div(elem='desc-column')
+					div(elem='title') #{p.title}
+					div(elem='subtitle') 
+						div(elem='date') 
+							div(elem='date-value') #{p.formattedDate}
+					div(elem='description')
+						div(elem='description-text') #{p.description}
+
+			a(block='post-preview-mobile', href='#{p.link}', style="cursor: pointer")
+				div(elem='description')
+					div(elem='title') #{p.title}
+					div(elem='small-date') #{p.smallDate}
+					div(elem='small-description') #{p.smallDescription}
+
+
+
+
