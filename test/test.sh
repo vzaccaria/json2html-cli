@@ -56,6 +56,7 @@ postsrcdir=$srcdir/fixtures/posts2
 template=$srcdir/fixtures/layouts/post.jade
 $bindir/index.js md2json directory $postsrcdir -d $postdstdir -t $template -c $config
 
+
 ref2=$refdir/soluzioni-prova-scritta-del-29-giugno.json
 tem2=$postdstdir/soluzioni-prova-scritta-del-29-giugno.json
 $npm/diff-files $ref2 $tem2 -m "Test generate json with html inside."
