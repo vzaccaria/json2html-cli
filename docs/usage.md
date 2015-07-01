@@ -1,11 +1,3 @@
-
-# json2html-cli
-
-> Converts a bunch of json files into a directory structured by category&#x2F;year&#x2F;month&#x2F;day&#x2F;name of html files
-
-## Usage
-
-```
 Usage:
     blog-cli md2json [ input | directory DIR -d DEST ] -t TEMPLATE -c CONFIG 
     blog-cli json2html [ directory -d DEST ] DIR  
@@ -22,15 +14,3 @@ Options:
 
 Arguments: 
     DIR         Source directory
-
-```
-
-## Authors
-* Vittorio Zaccaria
-
-## License
-BSD
-
-***
-
-

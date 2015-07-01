@@ -3,9 +3,11 @@
 
 > {{description}}
 
-## Usage Examples
+## Usage
 
-## Contributing
+```
+~USAGE~
+```
 
 ## Authors
 * {{author}}
