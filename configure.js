@@ -12,16 +12,12 @@ generateProject(_ => {
     _.cmd("chmod +x ./index.js", "index.js")
   })
 
-  _.collect("docs", _ => {
-    _.cmd("./node_modules/.bin/verb", "docs/*.md")
-  })
-
   _.collect("test", _ => {
     _.cmd("./test/test.sh")
   })
 
   _.collect("up", _ => {
-    _.cmd("make clean && ./node_modules/.bin/babel configure.js | node")
+    _.cmd("make clean && babel configure.js | node")
   });
 
   ["major", "minor", "patch"].map(it => {

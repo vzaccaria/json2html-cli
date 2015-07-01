@@ -6,36 +6,32 @@
 .DEFAULT_GOAL := all
 
 
-.PHONY: c-mgwcxskn
-c-mgwcxskn: command.js parse.js
+.PHONY: c-t710wpir
+c-t710wpir: command.js parse.js
 
 
 .PHONY: build
-build: c-mgwcxskn
-
-
-.PHONY: docs
-docs: k-jw3ob4q8
+build: c-t710wpir
 
 
 .PHONY: test
-test: k-nbg08kt4
+test: k-2ftvrvya
 
 
 .PHONY: up
-up: k-vohpu2mu
+up: k-uewf3sxs
 
 
 .PHONY: major
-major: k-bn824fn8 k-h15h5em4 k-lr0i2xjk
+major: k-60r0yfy8 k-93obxfun k-p1w0xph9
 
 
 .PHONY: minor
-minor: k-nec434gv k-4t9ta33r k-7iq31q1p
+minor: k-iqhonb9c k-1reee8d6 k-u7pj0smq
 
 
 .PHONY: patch
-patch: k-8hrjjnn6 k-03g2rgnk k-mqhhqvh6
+patch: k-snx5s32r k-ko0r2fcv k-6op56eu2
 
 
 .PHONY: prepare
@@ -44,80 +40,75 @@ prepare: .
 
 
 
-.PHONY: k-dvq8tfcy
-k-dvq8tfcy:  
+.PHONY: k-8xg44okw
+k-8xg44okw:  
 	((echo '#!/usr/bin/env node') && cat command.js) > index.js
 
 
-.PHONY: k-qbgwksi1
-k-qbgwksi1:  
+.PHONY: k-t1hxnaie
+k-t1hxnaie:  
 	chmod +x ./index.js
 
 
 .PHONY: all
 all: 
 	make build 
-	make k-dvq8tfcy 
-	make k-qbgwksi1  
+	make k-8xg44okw 
+	make k-t1hxnaie  
 
 
-.PHONY: k-jw3ob4q8
-k-jw3ob4q8:  
-	./node_modules/.bin/verb
-
-
-.PHONY: k-nbg08kt4
-k-nbg08kt4:  
+.PHONY: k-2ftvrvya
+k-2ftvrvya:  
 	./test/test.sh
 
 
-.PHONY: k-vohpu2mu
-k-vohpu2mu:  
-	make clean && ./node_modules/.bin/babel configure.js | node
+.PHONY: k-uewf3sxs
+k-uewf3sxs:  
+	make clean && babel configure.js | node
 
 
-.PHONY: k-bn824fn8
-k-bn824fn8:  
+.PHONY: k-60r0yfy8
+k-60r0yfy8:  
 	make all
 
 
-.PHONY: k-h15h5em4
-k-h15h5em4:  
+.PHONY: k-93obxfun
+k-93obxfun:  
 	make docs
 
 
-.PHONY: k-lr0i2xjk
-k-lr0i2xjk:  
+.PHONY: k-p1w0xph9
+k-p1w0xph9:  
 	./node_modules/.bin/xyz -i major
 
 
-.PHONY: k-nec434gv
-k-nec434gv:  
+.PHONY: k-iqhonb9c
+k-iqhonb9c:  
 	make all
 
 
-.PHONY: k-4t9ta33r
-k-4t9ta33r:  
+.PHONY: k-1reee8d6
+k-1reee8d6:  
 	make docs
 
 
-.PHONY: k-7iq31q1p
-k-7iq31q1p:  
+.PHONY: k-u7pj0smq
+k-u7pj0smq:  
 	./node_modules/.bin/xyz -i minor
 
 
-.PHONY: k-8hrjjnn6
-k-8hrjjnn6:  
+.PHONY: k-snx5s32r
+k-snx5s32r:  
 	make all
 
 
-.PHONY: k-03g2rgnk
-k-03g2rgnk:  
+.PHONY: k-ko0r2fcv
+k-ko0r2fcv:  
 	make docs
 
 
-.PHONY: k-mqhhqvh6
-k-mqhhqvh6:  
+.PHONY: k-6op56eu2
+k-6op56eu2:  
 	./node_modules/.bin/xyz -i patch
 
 
