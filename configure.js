@@ -3,13 +3,19 @@ var {
 } = require('diy-build')
 
 generateProject(_ => {
+
+_.livescriptc = (dir, prod, ...deps) => {
+    var command = (_) => `((echo '#!/usr/bin/env node') && lsc -c ${_.source}) > ${_.product} && chmod +x ${_.product}`
+    var product = (_) => prod
+    _.compileFiles(...([command, product, dir].concat(deps)))
+  }
+
   _.collectSeq("all", _ => {
     _.collect("build", _ => {
+      _.livescriptc("command.ls", "index.js")
       _.livescript("*.ls")
 
     })
-    _.cmd("((echo '#!/usr/bin/env node') && cat command.js) > index.js", "command.js")
-    _.cmd("chmod +x ./index.js", "index.js")
   })
 
   _.collect("test", _ => {
