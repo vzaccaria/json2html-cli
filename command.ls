@@ -7,6 +7,7 @@ bb       = require 'bluebird'
 beml     = require('beml')
 {parse}  = require('./parse')
 moment   = require 'moment'
+debug = require('debug')('blog-cli')
 sh       = bb.promisifyAll(require 'shelljs')
 require! 'fs'
 
@@ -46,15 +47,21 @@ o = docopt(doc)
 # console.log o
 
 
-
-
 md = {}
 
-if false
-    Remarkable = require('remarkable');
-    md.render = (new Remarkable()).render;
+if true 
+
+    {process} = require('exemd');
+    preprocess = -> process('raw,png', it)
+
+    marked = bb.promisify(require('marked'))
+
+    md.render = ->
+        preprocess(it).then ->
+            res = marked(it, { -sanitize })
+            return res
 else 
-    md.render = require('marked');
+    md.render = bb.promisify(require('marked'));
 
 o = docopt(doc)
 
@@ -89,12 +96,13 @@ render-json-with-post-list = (post-list) ->
 
 
 render-json-post = (jj) ->
-    jj.post.contents = (md.render(jj.md-content));
-    res = render-json-w-locals(post: jj.post)
-    delete jj.post.contents 
-    jj.post.html-content = res
-    jj.post.link = "#{jj.post.dir-name}/#{jj.post.file-name}.html"
-    return jj 
+    md.render(jj.md-content).then ->
+        jj.post.contents = it;
+        res = render-json-w-locals(post: jj.post)
+        delete jj.post.contents 
+        jj.post.html-content = res
+        jj.post.link = "#{jj.post.dir-name}/#{jj.post.file-name}.html"
+        return jj 
 
 
 if o['md2json'] and not o['directory'] 
@@ -104,8 +112,8 @@ if o['md2json'] and not o['directory']
         else
             throw "not supported"
 
-        render-json-post(data)
-        console.log JSON.stringify(data, 0, 4)
+        render-json-post(data).then ->
+            console.log JSON.stringify(data, 0, 4)
 
 if o['md2json'] and o['directory'] 
         filenames = glob.sync("#directory/*.md")
@@ -114,9 +122,8 @@ if o['md2json'] and o['directory']
             fn = filenames.map (f) ->
                     fs.readFileAsync(f, 'utf-8').then ->
                         data = parse(it)
-                        rendered = render-json-post(data)
-                        # console.log "Writing #dest/#{rendered.post.file-name}.json "
-                        fs.writeFileAsync("#dest/#{rendered.post.file-name}.json", JSON.stringify(rendered, 0, 4), 'utf-8')
+                        render-json-post(data).then ->
+                            fs.writeFileAsync("#dest/#{it.post.file-name}.json", JSON.stringify(it, 0, 4), 'utf-8')
             bb.all(fn).then ->
                 console.log "done"
 
